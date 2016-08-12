@@ -1,5 +1,6 @@
 package ua.kruart.snakegame;
 
+import ua.kruart.snakegame.components.Apple;
 import ua.kruart.snakegame.components.Snake;
 
 import javax.swing.*;
@@ -12,12 +13,13 @@ import java.awt.event.KeyEvent;
 /**Created by kruart on 11.08.2016.*/
 public class SnakeGame extends JPanel implements ActionListener{
 
-    public static final int SCALE = 32;
+    public static final int SCALE = 32;     //маштаб сетки
     public static final int WIDTH = 20;
     public static final int HEIGHT = 20;
     public static final int SPEED = 5;
 
     Snake s = new Snake(10, 10, 9, 10); //создаем объект змейки с начально заданными координатами
+    Apple apple = new Apple();  //создаем яблоко
     Timer t = new Timer(1000 / SPEED, this); //таймер. 1000 / SPEED = кол-во передвижений в секунду
 
     public SnakeGame(){
@@ -37,9 +39,9 @@ public class SnakeGame extends JPanel implements ActionListener{
     }
 
     public void paint(Graphics g) {
-        g.setColor(color(5, 50, 10));   //устанавливаем цвет для фона
+        g.setColor(new Color(5, 50, 10));   //устанавливаем цвет для фона
         g.fillRect(0, 0, WIDTH * SCALE, HEIGHT * SCALE); //заливаем фон
-        g.setColor(color(175, 176, 125));//устанавливаем цвет для сетки
+        g.setColor(new Color(175, 176, 125));//устанавливаем цвет для сетки
 
         for (int i = 0; i <= WIDTH * SCALE; i+=SCALE) {
             g.drawLine(i, 0, i, HEIGHT * SCALE);    //заливаем сетку по вертикали
@@ -50,18 +52,29 @@ public class SnakeGame extends JPanel implements ActionListener{
         }
 
         for (int i = 0; i < s.length; i++) {
-            g.setColor(color(45, 0, 178)); //рисуем змейку
+            g.setColor(new Color(45, 0, 178)); //рисуем змейку
             g.fillRect(s.snakeX[i] * SCALE + 1, s.snakeY[i] * SCALE + 1, SCALE - 1, SCALE - 1); //отрисовываем змейку по координатам
         }
+
+        g.setColor(new Color(255, 0, 0));   //рисуем яблоко
+        g.fillRect(apple.positionX * SCALE + 1, apple.positionY * SCALE + 1, SCALE - 1, SCALE - 1);
     }
 
-    public Color color(int red, int green, int blue){
-        return new Color(red, green, blue);
-    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         s.move(); //запускаем змейку
+
+        if ((s.snakeX[0] == apple.positionX) && (s.snakeY[0] == apple.positionY)){ //если голова змеи находиться в одной точке с яблоком
+            apple.setRandomPosition();  //рандомно выставляем позицию для нового яблока на фрейме
+            s.length++;     //увеличиваем размер змеи
+        }
+
+        for (int i = 0; i < s.length; i++) {    //пробегаемся по всему телу змеи,
+            if ((s.snakeX[i] == apple.positionX) && (s.snakeY[i] == apple.positionY)){ //если яблоко  появилось на теле змеи
+                apple.setRandomPosition();  //перерисовываем - заново рандомно выставляем позицию для нового яблока на фрейме
+            }
+        }
 
         repaint();//перерисовываем
     }

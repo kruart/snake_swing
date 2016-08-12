@@ -1,12 +1,14 @@
 package ua.kruart.snakegame.components;
 
+import ua.kruart.snakegame.SnakeGame;
+
 /**Created by kruart on 12.08.2016.*/
 public class Snake {
     public int direction = 0; //направление
-    public int length = 10; //длина змейки
+    public int length = 3; //длина змейки
 
-    public int snakeX[] = new int[100];
-    public int snakeY[] = new int[100];
+    public int snakeX[] = new int[SnakeGame.WIDTH * SnakeGame.HEIGHT];
+    public int snakeY[] = new int[SnakeGame.WIDTH * SnakeGame.HEIGHT];
 
 
     public Snake(int x0, int y0, int x1, int y1) {  //координаты начало и конца змейки
@@ -36,7 +38,11 @@ public class Snake {
             }
 
         }
+
+        //возможность выхода змейки с другой стороны экрана при выходе за границы поля
+        if (snakeX[0] > SnakeGame.WIDTH) snakeX[0] = 0;
+        if (snakeX[0] < 0) snakeX[0] = SnakeGame.WIDTH - 1;
+        if (snakeY[0] > SnakeGame.HEIGHT) snakeY[0] = 0;
+        if (snakeY[0] < 0) snakeY[0] = SnakeGame.HEIGHT - 1;
     }
-
-
 }
