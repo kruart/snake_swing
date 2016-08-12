@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 /**Created by kruart on 11.08.2016.*/
 public class SnakeGame extends JPanel implements ActionListener{
@@ -20,6 +22,8 @@ public class SnakeGame extends JPanel implements ActionListener{
 
     public SnakeGame(){
         t.start();      //запуск таймера
+        addKeyListener(new Keyboard()); //добавляем в listener отслеживания нажатия клавиш
+        setFocusable(true); //фокусировка - без неё не отрабатываются нажатия клавиш
     }
 
     public static void main(String[] args) {
@@ -46,7 +50,7 @@ public class SnakeGame extends JPanel implements ActionListener{
         }
 
         for (int i = 0; i < s.length; i++) {
-            g.setColor(color(160, 150, 0)); //рисуем змейку
+            g.setColor(color(45, 0, 178)); //рисуем змейку
             g.fillRect(s.snakeX[i] * SCALE + 1, s.snakeY[i] * SCALE + 1, SCALE - 1, SCALE - 1); //отрисовываем змейку по координатам
         }
     }
@@ -60,5 +64,17 @@ public class SnakeGame extends JPanel implements ActionListener{
         s.move(); //запускаем змейку
 
         repaint();//перерисовываем
+    }
+
+    private class Keyboard extends KeyAdapter {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            int key = e.getKeyCode();
+
+            if((key == KeyEvent.VK_RIGHT) && (s.direction != 2)) {s.direction = 0;}
+            if((key == KeyEvent.VK_DOWN) && (s.direction != 3)) {s.direction = 1;}
+            if((key == KeyEvent.VK_LEFT) && (s.direction != 0)) {s.direction = 2;}
+            if((key == KeyEvent.VK_UP) && (s.direction != 1)) {s.direction = 3;}
+        }
     }
 }
